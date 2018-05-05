@@ -1,0 +1,22 @@
+{
+  "paths":{
+    "css":"./app/public/css/",
+    "js":"./app/public/js/",
+    "data":"./app/data/"
+  },
+  "mdl":{
+      "dismissible": true,
+      "opacity": 0.5,
+      "inDuration": 400,
+      "outDuration": 200,
+      "startingTop": "4%",
+      "endingTop": "10%"
+    },
+    "defaults":{
+      "to":"to@test.com",
+      "from":"from@test.com",
+      "subject":"test subject",
+      "text":"test text....",
+      "html":"<h3>testHtml</h3>"
+    }
+}

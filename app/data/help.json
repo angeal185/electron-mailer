@@ -1,0 +1,7 @@
+{
+  "online":"electron mailer is online and ready to send emails.",
+  "offline":"electron mailer is offline. unable to send emails.",
+  "mailTo":"enter email addresses seperated either by a comma or space. click default to load your default mailTo address or import to load a saved list of addresses",
+  "mailFrom":"enter email addresses seperated either by a comma or space. click default to load your default mailTo address or import to load a saved list of addresses",
+  "mailSubject":"enter email addresses seperated either by a comma or space. click default to load your default mailTo address or import to load a saved list of addresses"
+}

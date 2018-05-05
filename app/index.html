@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>electron mailer</title>
+  <link rel="stylesheet" href="./app/public/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./app/public/css/materialize.css">
+  <link rel="stylesheet" href="./app/public/css/styles.css">
+</head>
+<body class="">
+
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">Logo</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="sass.html">Sass</a></li>
+        <li><a href="badges.html">Components</a></li>
+        <li><a href="collapsible.html">JavaScript</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="main w90">
+
+    <div class="row">
+      <div class="col s6">
+
+          <div class="input-field">
+            <input id="mailTo" type="text" class="validate" placeholder="To">
+            <div id="mailToList" class="badgeDiv"></div>
+            <a id="toDefault" class="waves-effect waves-light btn">default</a>
+            <a class="waves-effect waves-light btn modal-trigger right" href="#mailToMdl">import</a>
+
+          </div>
+          <div class="input-field mt50">
+            <input id="mailFrom" type="text" class="validate" placeholder="From">
+            <a id="fromDefault" class="waves-effect waves-light btn">default</a>
+
+          </div>
+          <div class="input-field mt50">
+            <input id="mailSubject" type="text" class="validate" placeholder="Subject">
+            <a id="subjectDefault" class="waves-effect waves-light btn">default</a>
+          </div>
+
+          <textarea id="mailText" class="materialize-textarea mt50" placeholder="Text"></textarea>
+          <a id="textDefault" class="waves-effect waves-light btn">default</a>
+          <a class="waves-effect waves-light btn modal-trigger right" href="#mailTextMdl">import</a>
+
+          <textarea id="mailHtml" class="materialize-textarea mt50" placeholder="Html"></textarea>
+          <a id="htmlDefault" class="waves-effect waves-light btn">default</a>
+          <a class="waves-effect waves-light btn modal-trigger right" href="#mailHtmlMdl">import</a>
+
+      </div>
+      <div class="col s6">
+        <div class="card previewCard"></div>
+      </div>
+    </div>
+
+
+
+
+    <!-- Modal Structure -->
+    <div id="mailToMdl" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h4>to Modal Header</h4>
+
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">close</a>
+      </div>
+    </div>
+    <div id="mailTextMdl" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h4>text Modal Header</h4>
+        <p>A bunch of text</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">close</a>
+      </div>
+    </div>
+    <div id="mailHtmlMdl" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h4>html Modal Header</h4>
+        <p>A bunch of text</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">close</a>
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+<!--
+    We are using Node.js <script>document.write(process.versions.node)</script>,
+    Chromium <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.-->
+  </div>
+
+<div class="bottomNav">
+  <div class="btnDiv">
+    <button type="button" id="editorSettings" class="mini-btn waves-effect waves-light blink">ACE</button>
+    <button type="button" id="mainSettings" class="mini-btn waves-effect waves-light blink">SETTINGS</button>
+  </div>
+  <div class="globeDiv">
+    <div id="onlineStatus" class="greenGlobe blink">
+
+    </div>
+  </div>
+</div>
+
+
+
+<div class="mask"></div>
+
+<div id="settingsMenu">hello</div>
+<script src="./app/public/js/src-min-noconflict/ace.js"></script>
+<script src="./app/public/js/sound.js"></script>
+  <script>
+
+    const {ipcRenderer} = require('electron'),
+    appConf = require('./app/config/appConfig');
+    jQuery = require('jquery'),
+    _ = require('lodash');
+
+    _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+
+    var toTop = _.template('<span id="toTop" class="fa fa-chevron-up"></span>');
+    var globeTpl = _.template('<div id="{{id}}" class="redGlobe blink"></div>');
+    var helpTpl  = _.template('<div id="helpDiv"><span id="AboutDevTypeText" class="typeing blink"></span><span class="blinker">&#32;</span></div>');
+
+    const appUtils = require(appConf.paths.js+'appUtils.js'),
+    help = require(appConf.paths.data+'help.json'),
+
+    $ = jQuery,
+    arr = [],
+    obj = {};
+
+
+    var mailToList = _.clone(arr);
+
+    require('./bower_components/materialize/js/velocity.min.js');
+    require('./bower_components/materialize/js/global.js');
+    require('./bower_components/materialize/js/forms.js');
+    require('./bower_components/materialize/js/dropdown.js');
+    require(appConf.paths.js+'modal.js');
+    require(appConf.paths.js+'waves.js');
+    require(appConf.paths.js+'renderer.js')
+    
+
+
+    appUtils.list('./templates/mailToList/','To')
+    appUtils.list('./templates/mailToList/','Text')
+    appUtils.htmlList('./templates/html/')
+    appUtils.defaults();
+    appUtils.mask('#mainSettings','.mask','#settingsMenu')
+
+    var assetPath = "./app/public/audio/";
+     var sounds = [
+         {src:"hover.mp3", id:"hover"}
+     ];
+     //createjs.Sound.alternateExtensions = ["mp3"];    // if the passed extension is not supported, try this extension
+     //createjs.Sound.on("fileload", handleLoad); // call handleLoad when each sound loads
+     createjs.Sound.registerSounds(sounds, assetPath);
+
+     function handleLoad() {
+
+         createjs.Sound.play("success");
+
+         //createjs.Sound.play("init");
+     }
+     createjs.Sound.play("success")
+  </script>
+</body>
+</html>
