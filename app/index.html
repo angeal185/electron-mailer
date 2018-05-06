@@ -167,22 +167,7 @@
 
 
 
-    appUtils.list('./templates/mailToList/','To')
-    appUtils.list('./templates/mailToList/','Text')
-    appUtils.htmlList('./templates/html/')
-    appUtils.defaults();
-    appUtils.mask('#mainSettings','.mask','#settingsMenu')
-
-
-    _.forEach(appConf.sounds,function(i){
-      $('#audio').append('<source src="'+appConf.paths.audio+i+'"></source>');
-    })
-
-
-    var hvr = $("#audio")[0];
-      $(".btn").hover(function(){
-      hvr.play();
-    });
+    
 
 
 

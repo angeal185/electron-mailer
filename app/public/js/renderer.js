@@ -1,8 +1,3 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
-
-
 
 appUtils.onlineStatus('on','red','green',help.online)
 appUtils.onlineStatus('off','green','red',help.offline)
@@ -27,6 +22,23 @@ appUtils.updateOnlineStatus()
 ipcRenderer.send('getData')
 
 
+
+appUtils.list('./templates/mailToList/','To')
+appUtils.list('./templates/mailToList/','Text')
+appUtils.htmlList('./templates/html/')
+appUtils.defaults();
+appUtils.mask('#mainSettings','.mask','#settingsMenu')
+
+
+_.forEach(appConf.sounds,function(i){
+  $('#audio').append('<source src="'+appConf.paths.audio+i+'"></source>');
+})
+
+
+var hvr = $("#audio")[0];
+  $(".btn").hover(function(){
+  hvr.play();
+});
 
 /*
 setInterval(function(){
