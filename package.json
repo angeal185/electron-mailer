@@ -2,7 +2,7 @@
   "name": "electron-mailer",
   "version": "1.0.0",
   "description": "electron email-dispatch-client",
-  "main": "main.js",
+  "main": "app/main.js",
   "scripts": {
     "start": "electron ."
   },

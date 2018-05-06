@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>electron mailer</title>
-  <link rel="stylesheet" href="./app/public/css/font-awesome.min.css">
-  <link rel="stylesheet" href="./app/public/css/materialize.css">
-  <link rel="stylesheet" href="./app/public/css/styles.css">
+  <link rel="stylesheet" href="./public/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./public/css/materialize.css">
+  <link rel="stylesheet" href="./public/css/styles.css">
 </head>
 <body class="">
 
@@ -117,12 +117,12 @@
 <div class="mask"></div>
 
 <div id="settingsMenu">hello</div>
-<script src="./app/public/js/src-min-noconflict/ace.js"></script>
-<script src="./app/public/js/sound.js"></script>
+<audio id="audio" preload="auto"></audio>
+<script src="./public/js/src-min-noconflict/ace.js"></script>
   <script>
 
     const {ipcRenderer} = require('electron'),
-    appConf = require('./app/config/appConfig');
+    appConf = require('./config/appConfig');
     jQuery = require('jquery'),
     _ = require('lodash');
 
@@ -141,15 +141,12 @@
 
 
     var mailToList = _.clone(arr);
+    var requireScripts = ["velocity.min","global","forms","modal","waves","renderer"];
 
-    require('./bower_components/materialize/js/velocity.min.js');
-    require('./bower_components/materialize/js/global.js');
-    require('./bower_components/materialize/js/forms.js');
-    require('./bower_components/materialize/js/dropdown.js');
-    require(appConf.paths.js+'modal.js');
-    require(appConf.paths.js+'waves.js');
-    require(appConf.paths.js+'renderer.js')
-    
+    _.forEach(requireScripts,function(i){
+      require(appConf.paths.js + i + '.js');
+    })
+
 
 
     appUtils.list('./templates/mailToList/','To')
@@ -158,21 +155,18 @@
     appUtils.defaults();
     appUtils.mask('#mainSettings','.mask','#settingsMenu')
 
-    var assetPath = "./app/public/audio/";
-     var sounds = [
-         {src:"hover.mp3", id:"hover"}
-     ];
-     //createjs.Sound.alternateExtensions = ["mp3"];    // if the passed extension is not supported, try this extension
-     //createjs.Sound.on("fileload", handleLoad); // call handleLoad when each sound loads
-     createjs.Sound.registerSounds(sounds, assetPath);
 
-     function handleLoad() {
+    _.forEach(appConf.sounds,function(i){
+      $('#audio').append('<source src="'+appConf.paths.audio+i+'"></source>');
+    })
 
-         createjs.Sound.play("success");
 
-         //createjs.Sound.play("init");
-     }
-     createjs.Sound.play("success")
+    var hvr = $("#audio")[0];
+      $(".btn").hover(function(){
+      hvr.play();
+    });
+
+
   </script>
 </body>
 </html>

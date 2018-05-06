@@ -1,8 +1,9 @@
 {
   "paths":{
-    "css":"./app/public/css/",
-    "js":"./app/public/js/",
-    "data":"./app/data/"
+    "css":"./public/css/",
+    "js":"./public/js/",
+    "data":"./data/",
+    "audio":"./public/audio/"
   },
   "mdl":{
       "dismissible": true,
@@ -18,5 +19,6 @@
       "subject":"test subject",
       "text":"test text....",
       "html":"<h3>testHtml</h3>"
-    }
+    },
+    "sounds": ["hover.mp3"]
 }

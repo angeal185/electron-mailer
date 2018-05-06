@@ -3,7 +3,7 @@ const electron = require('electron'),
 path = require('path'),
 url = require('url'),
 _ = require('lodash'),
-$ = require('jquery');
+config = require('./config/config');
 
 
 
