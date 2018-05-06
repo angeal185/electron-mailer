@@ -28,26 +28,33 @@
             <input id="mailTo" type="text" class="validate" placeholder="To">
             <div id="mailToList" class="badgeDiv"></div>
             <a id="toDefault" class="waves-effect waves-light btn">default</a>
-            <a class="waves-effect waves-light btn modal-trigger right" href="#mailToMdl">import</a>
+            <a id="toStore" class="waves-effect waves-light btn">store</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#mailToMdl">import</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#mailToExportMdl">export</a>
 
           </div>
           <div class="input-field mt50">
             <input id="mailFrom" type="text" class="validate" placeholder="From">
             <a id="fromDefault" class="waves-effect waves-light btn">default</a>
+            <a id="fromStore" class="waves-effect waves-light btn">store</a>
+
 
           </div>
           <div class="input-field mt50">
             <input id="mailSubject" type="text" class="validate" placeholder="Subject">
             <a id="subjectDefault" class="waves-effect waves-light btn">default</a>
+            <a id="subjectStore" class="waves-effect waves-light btn">store</a>
           </div>
 
           <textarea id="mailText" class="materialize-textarea mt50" placeholder="Text"></textarea>
           <a id="textDefault" class="waves-effect waves-light btn">default</a>
-          <a class="waves-effect waves-light btn modal-trigger right" href="#mailTextMdl">import</a>
+          <a id="textStore" class="waves-effect waves-light btn">store</a>
+          <a class="waves-effect waves-light btn modal-trigger" href="#mailTextMdl">import</a>
 
           <textarea id="mailHtml" class="materialize-textarea mt50" placeholder="Html"></textarea>
           <a id="htmlDefault" class="waves-effect waves-light btn">default</a>
-          <a class="waves-effect waves-light btn modal-trigger right" href="#mailHtmlMdl">import</a>
+          <a id="htmlStore" class="waves-effect waves-light btn">store</a>
+          <a class="waves-effect waves-light btn modal-trigger" href="#mailHtmlMdl">import</a>
 
       </div>
       <div class="col s6">
@@ -62,12 +69,23 @@
     <div id="mailToMdl" class="modal bottom-sheet">
       <div class="modal-content">
         <h4>to Modal Header</h4>
-
       </div>
       <div class="modal-footer">
         <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">close</a>
       </div>
     </div>
+
+    <div id="mailToExportMdl" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h4>export mail tpl</h4>
+        <input id="mailToExport" type="text" class="validate" placeholder="To">
+      </div>
+      <div class="modal-footer">
+        <a id="toExport" class="modal-action modal-close waves-effect waves-green btn-flat">save</a>
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">close</a>
+      </div>
+    </div>
+
     <div id="mailTextMdl" class="modal bottom-sheet">
       <div class="modal-content">
         <h4>text Modal Header</h4>
@@ -165,6 +183,8 @@
       $(".btn").hover(function(){
       hvr.play();
     });
+
+
 
 
   </script>

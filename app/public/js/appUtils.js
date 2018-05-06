@@ -1,6 +1,52 @@
-const fs = require('fs');
+const fs = require('fs'),
+modJSON = require('../../modules/modJSON');
 
 var editor = ace.edit("mailHtml")
+
+function logEach(i){
+  _.forEach(i,function(e){
+    console.log(e)
+  })
+}
+
+exports.storeDefault = function(a,b){
+  var src = './app/config/appConfig.json'
+  $(a).click(function() {
+    var choice = a.slice(1,-5),
+    ud;
+    if (choice === 'html'){
+      ud = editor.getValue()
+    } else {
+      var ud = $(b).val();
+    }
+
+    logEach([ud,choice])
+    fs.readFile(src,'utf8',function(err, e){
+      if (err) {
+        console.log(err);
+      }
+      e = JSON.parse(e);
+      e.defaults[choice] = ud;
+      fs.writeFile(src, JSON.stringify(e), function(err){
+        if (err) throw err;
+        appUtils.showtoast('default updated');
+        appUtils.defaults();
+      });
+    })
+  });
+}
+
+exports.write = function(dir,b,ext,c){
+  var src = $(b).val(),
+  dest = $(c).val();
+
+  fs.writeFile(dir + src + '.' + ext, dest, function(err){
+    if (err) throw err;
+    appUtils.showtoast(dest + ' saved');
+    logEach([src,dir,dest])
+  });
+}
+
 
 function ToastBuilder(options) {
   // options are optional
@@ -71,13 +117,15 @@ function helpDiv(a, b) {
 
 exports.list = function(i,x) {
   var items = _.clone(arr);
+  var choice = $('#mail'+x+'Mdl > .modal-content');
+  choice.empty();
   fs.readdir(i, function(err, files) {
     if (err) {
     console.log(err);
     return;
   }
     _.forEach(files,function(f){
-      $('#mail'+x+'Mdl > .modal-content').append('<a class="waves-effect waves-light btn mr5 '+x+'Files">'+f+'</a>')
+      choice.append('<a class="waves-effect waves-light btn mr5 '+x+'Files">'+f+'</a>')
     });
     $('.'+x+'Files').click(function(){
       fs.readFile(i+this.text,'utf8',function(err, e){
@@ -191,14 +239,23 @@ exports.editorSettingsInit = function() {
 }
 
 exports.defaults = function() {
-  _.forIn(appConf.defaults,function(i,e){
-    $('#'+e+'Default').click(function() {
-      if (e === 'html'){
-        editor.setValue(i)
-      } else {
-        $(this).siblings('input, textarea').val(i)
-      }
-    });
+  var src = './app/config/appConfig.json'
+  fs.readFile(src,'utf8',function(err, data){
+    if (err) {
+      console.log(err);
+    }
+    data = JSON.parse(data);
+    _.forIn(data.defaults,function(i,e){
+      $('#'+e+'Default').off();
+      $('#'+e+'Default').click(function() {
+        if (e === 'html'){
+          editor.setValue(i)
+        } else {
+          $(this).siblings('input, textarea').val(i)
+          //console.log(i)
+        }
+      });
+    })
   })
 }
 

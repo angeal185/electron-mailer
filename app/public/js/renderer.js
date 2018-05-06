@@ -8,10 +8,15 @@ appUtils.onlineStatus('on','red','green',help.online)
 appUtils.onlineStatus('off','green','red',help.offline)
 
 var inputHelpLst = ["To","From","Subject"]
+var itemList = ["to","from","subject","text","html"]
+
 _.forEach(inputHelpLst,function(i){
   appUtils.helpMsg('#mail'+i,'mail'+i, help['mail'+i])
 })
 
+_.forEach(itemList,function(i){
+  appUtils.storeDefault('#'+i+'Store','#mail'+_.capitalize(i))
+})
 
 ipcRenderer.on('modalData', function(event,arg){
   console.log('modal data recieved.')
@@ -38,15 +43,12 @@ setInterval(function(){
 $('body')
   .append(toTop)
   .append(helpTpl)
-
-
   $('#mailTo').keyup(function(event) {
     mailToList = _.words(this.value, /[^, ]+/g);
     $('#mailToList').empty();
     _.forEach(mailToList,function(i){
       $('#mailToList').append('<span class="new badge">'+i+'</span>')
     })
-
   });
 
   appUtils.initEditor();
@@ -75,4 +77,10 @@ $('.modal').modal({
    }
 });
 appUtils.editorSettingsInit()
+});
+
+
+$('#toExport').click(function() {
+  appUtils.write('./templates/mailToList/','#mailToExport','txt','#mailTo');
+  appUtils.list('./templates/mailToList/','To')
 });
