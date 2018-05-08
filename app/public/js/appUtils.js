@@ -9,13 +9,58 @@ function logEach(i){
   })
 }
 
+exports.localStorage = function(){
+  if(typeof(Storage) !== "undefined") {
+      console.log('have Web Storage support..')
+      globeChange('#sessionStatus',"red","green")
+      appUtils.helpMsg('#sessionStatus','localStorage', 'online')
+      var data = JSON.parse(localStorage.getItem("session"))
+      _.forIn(_.omit(data, "html"),function(i,e){
+        //console.log(i)
+        $('#mail'+_.capitalize(e)).val(i);
+      })
+      editor.setValue(data.html)
+
+      $('#storeSession').click(function(event) {
+        var sessionVal = _.clone(obj)
+        _.forEach(appConf.itemList.slice(0,-1),function(i){
+          sessionVal[i] = $('#mail'+_.capitalize(i)).val();
+        })
+        sessionVal.html = editor.getValue();
+        localStorage.setItem("session", JSON.stringify(sessionVal));
+      })
+      $('#resetSession').click(function(event) {
+        var resetVal = _.clone(obj)
+        _.forEach(appConf.itemList,function(i){
+          resetVal[i] = '';
+        })
+        localStorage.setItem("session", JSON.stringify(resetVal));
+      });
+  } else {
+      console.log('Sorry! No Web Storage support..')
+      appUtils.helpMsg('#sessionStatus','localStorage', 'offline')
+  }
+}
+
+
+
+exports.mdlReady = function(modal, trigger) {
+  console.log('modal '+this.id.slice(4,-3)+' opened');
+  console.log('requesting '+this.id+' data from server...');
+  ipcRenderer.send('modalData', this.id)
+}
+
+
+exports.mdlComplete = function() {
+   console.log('modal '+this.id.slice(4,-3)+' closed');
+ }
+
 exports.storeDefault = function(a,b){
   var src = './app/config/appConfig.json'
   $(a).click(function() {
-    var choice = a.slice(1,-5),
-    ud;
+    var choice = a.slice(1,-5);
     if (choice === 'html'){
-      ud = editor.getValue()
+      var ud = editor.getValue()
     } else {
       var ud = $(b).val();
     }
@@ -37,12 +82,17 @@ exports.storeDefault = function(a,b){
 }
 
 exports.write = function(dir,b,ext,c){
-  var src = $(b).val(),
-  dest = $(c).val();
+  var src = $(b).val();
+  if (c === 'html'){
+    dest = editor.getValue();
+  } else {
+    dest = $(c).val();
+  }
+
 
   fs.writeFile(dir + src + '.' + ext, dest, function(err){
     if (err) throw err;
-    appUtils.showtoast(dest + ' saved');
+    appUtils.showtoast(src + ' saved');
     logEach([src,dir,dest])
   });
 }
@@ -114,7 +164,6 @@ function helpDiv(a, b) {
   }
 }
 
-
 exports.list = function(i,x) {
   var items = _.clone(arr);
   var choice = $('#mail'+x+'Mdl > .modal-content');
@@ -134,6 +183,8 @@ exports.list = function(i,x) {
         }
         $('#mail'+x).val(e).keyup();
       })
+
+      $('.ToFilesTtl').html(this.innerHTML);
     })
   });
 };
@@ -153,6 +204,8 @@ exports.htmlList = function(i) {
         if (err) {
           console.log(err);
         }
+        editor.setValue(e)
+
       })
     })
   });
@@ -184,7 +237,7 @@ exports.enableBtn = function(i) {
 
 exports.helpMsg = function(a,b,c){
   $(a).hover(function() {
-    $('body').append(helpTpl())
+    $('body').append(tpl.helpTpl())
     $('#helpDiv').fadeIn('fast');
     helpDiv(b,c);
   }, function() {
@@ -193,11 +246,16 @@ exports.helpMsg = function(a,b,c){
   });
 }
 
+function globeChange(a,b,c){
+  $(a).removeClass(b + 'Globe').addClass(c + 'Globe')
+}
+
 exports.onlineStatus = function(a,b,c,d){
  ipcRenderer.on(a + 'line', function(){
-   $('#onlineStatus').removeClass(b + 'Globe').addClass(c + 'Globe')
-   console.log(a + 'line')
+   globeChange('#onlineStatus',b,c)
    appUtils.helpMsg('#onlineStatus',a + 'line', d)
+
+   console.log(a + 'line')
  })
 }
 
@@ -224,7 +282,6 @@ exports.initEditor = function() {
     }
   })
   editor.on("change", _.debounce(previewUpdate, 500))
-  //  editor.execCommand("showSettingsMenu")
 }
 
 exports.editorSettingsInit = function() {
@@ -258,7 +315,6 @@ exports.defaults = function() {
     })
   })
 }
-
 
 exports.mask = function(a,b,c){
   $(a).click(function() {

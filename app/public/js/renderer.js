@@ -3,13 +3,14 @@ appUtils.onlineStatus('on','red','green',help.online)
 appUtils.onlineStatus('off','green','red',help.offline)
 
 var inputHelpLst = ["To","From","Subject"]
-var itemList = ["to","from","subject","text","html"]
 
+
+//console.log(itemList.slice(0,-1))
 _.forEach(inputHelpLst,function(i){
   appUtils.helpMsg('#mail'+i,'mail'+i, help['mail'+i])
 })
 
-_.forEach(itemList,function(i){
+_.forEach(appConf.itemList,function(i){
   appUtils.storeDefault('#'+i+'Store','#mail'+_.capitalize(i))
 })
 
@@ -17,28 +18,25 @@ ipcRenderer.on('modalData', function(event,arg){
   console.log('modal data recieved.')
 })
 
-
 appUtils.updateOnlineStatus()
 ipcRenderer.send('getData')
 
-
-
-appUtils.list('./templates/mailToList/','To')
-appUtils.list('./templates/mailToList/','Text')
-appUtils.htmlList('./templates/html/')
+appUtils.list(appConf.tplDirs.to,'To')
+appUtils.list(appConf.tplDirs.text,'Text')
+appUtils.htmlList(appConf.tplDirs.html)
 appUtils.defaults();
 appUtils.mask('#mainSettings','.mask','#settingsMenu')
-
 
 _.forEach(appConf.sounds,function(i){
   $('#audio').append('<source src="'+appConf.paths.audio+i+'"></source>');
 })
 
-
 var hvr = $("#audio")[0];
-  $(".btn").hover(function(){
+$(".btn").hover(function(){
   hvr.play();
-});
+})
+
+
 
 /*
 setInterval(function(){
@@ -53,8 +51,8 @@ setInterval(function(){
 
 
 $('body')
-  .append(toTop)
-  .append(helpTpl)
+  .append(tpl.toTop)
+  .append(tpl.helpTpl)
   $('#mailTo').keyup(function(event) {
     mailToList = _.words(this.value, /[^, ]+/g);
     $('#mailToList').empty();
@@ -72,27 +70,40 @@ $('body')
 
 $(document).ready(function(){
 
-$('.modal').modal({
-  dismissible: appConf.dismissible,
-  opacity: appConf.opacity,
-  inDuration: appConf.inDuration,
-  outDuration: appConf.outDuration,
-  startingTop: appConf.startingTop,
-  endingTop: appConf.endingTop,
-  ready: function(modal, trigger) {
-    console.log('modal '+this.id.slice(4,-3)+' opened');
-    console.log('requesting '+this.id+' data from server...');
-    ipcRenderer.send('modalData', this.id)
-  },
-  complete: function() {
-     console.log('modal '+this.id.slice(4,-3)+' closed');
-   }
-});
-appUtils.editorSettingsInit()
+  $('.modal').modal({
+    dismissible: appConf.dismissible,
+    opacity: appConf.opacity,
+    inDuration: appConf.inDuration,
+    outDuration: appConf.outDuration,
+    startingTop: appConf.startingTop,
+    endingTop: appConf.endingTop,
+    ready: appUtils.mdlReady,
+    complete: appUtils.mdlComplete
+  });
+  appUtils.editorSettingsInit()
+  appUtils.localStorage()
+
+  _.forIn(_.omit(appConf.mail,'auth'),function(i,e){
+    $('#mailOps').append('<label for="#'+e+'" class="blink">'+_.startCase(e)+'</label><input id="'+e+'" type="text" class="validate" value="'+i+'">')
+  })
+  _.forIn(_.omit(appConf.mail.auth),function(i,e){
+    $('#mailOps').append('<label for="#'+e+'" class="blink">'+_.startCase(e)+'</label><input id="'+e+'" type="text" class="validate" value="'+i+'">')
+  })
+
 });
 
+var exp = {
+  "to":appConf.tplDirs.to,
+  "text":appConf.tplDirs.text
+};
 
-$('#toExport').click(function() {
-  appUtils.write('./templates/mailToList/','#mailToExport','txt','#mailTo');
-  appUtils.list('./templates/mailToList/','To')
+_.forIn(exp,function(e,i){
+  $('#'+i+'Export').click(function() {
+    appUtils.write(e,'#mail'+_.capitalize(i)+'Export','txt','#mail'+_.capitalize(i));
+    appUtils.list(e,_.capitalize(i))
+  });
+})
+$('#htmlExport').click(function() {
+  appUtils.write(appConf.tplDirs.html,'#mailHtmlExport','html','html');
+  appUtils.list(appConf.tplDirs.html,'Html')
 });

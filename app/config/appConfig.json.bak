@@ -1,24 +1,30 @@
 {
-  "paths":{
-    "css":"./public/css/",
-    "js":"./public/js/",
-    "data":"./data/",
-    "audio":"./public/audio/"
+  "paths": {
+    "css": "./public/css/",
+    "js": "./public/js/",
+    "data": "./data/",
+    "audio": "./public/audio/"
   },
-  "mdl":{
-      "dismissible": true,
-      "opacity": 0.5,
-      "inDuration": 400,
-      "outDuration": 200,
-      "startingTop": "4%",
-      "endingTop": "10%"
-    },
-    "defaults":{
-      "to":"to@test.com",
-      "from":"from@test.com",
-      "subject":"test subject",
-      "text":"test text....",
-      "html":"<h3>testHtml</h3>"
-    },
-    "sounds": ["hover.mp3"]
+  "mdl": {
+    "dismissible": true,
+    "opacity": 0.5,
+    "inDuration": 400,
+    "outDuration": 200,
+    "startingTop": "4%",
+    "endingTop": "10%"
+  },
+  "defaults": {
+    "to": "to6@test.com",
+    "from": "'ben eaves' <beneaves01@hotmail.com>",
+    "subject": "test subject3",
+    "text": "sdgfdsfsdfsdf",
+    "html": "<h3>testHtml345</h3>"
+  },
+  "sounds": ["hover.mp3"],
+  "tplDirs": {
+    "to": "./templates/mailToList/",
+    "text": "./templates/text/",
+    "html": "./templates/html/"
+  },
+  "itemList": ["to", "from", "subject", "text", "html"]
 }

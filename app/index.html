@@ -9,16 +9,7 @@
 </head>
 <body class="">
 
-  <nav>
-    <div class="nav-wrapper">
-      <a href="#" class="brand-logo">Logo</a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="sass.html">Sass</a></li>
-        <li><a href="badges.html">Components</a></li>
-        <li><a href="collapsible.html">JavaScript</a></li>
-      </ul>
-    </div>
-  </nav>
+
   <div class="main w90">
 
     <div class="row">
@@ -46,15 +37,23 @@
             <a id="subjectStore" class="waves-effect waves-light btn">store</a>
           </div>
 
-          <textarea id="mailText" class="materialize-textarea mt50" placeholder="Text"></textarea>
-          <a id="textDefault" class="waves-effect waves-light btn">default</a>
-          <a id="textStore" class="waves-effect waves-light btn">store</a>
-          <a class="waves-effect waves-light btn modal-trigger" href="#mailTextMdl">import</a>
+          <div class="input-field mt50">
+            <textarea id="mailText" class="materialize-textarea mt50" placeholder="Text"></textarea>
+            <a id="textDefault" class="waves-effect waves-light btn">default</a>
+            <a id="textStore" class="waves-effect waves-light btn">store</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#mailTextMdl">import</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#mailTextExportMdl">export</a>
+          </div>
 
-          <textarea id="mailHtml" class="materialize-textarea mt50" placeholder="Html"></textarea>
-          <a id="htmlDefault" class="waves-effect waves-light btn">default</a>
-          <a id="htmlStore" class="waves-effect waves-light btn">store</a>
-          <a class="waves-effect waves-light btn modal-trigger" href="#mailHtmlMdl">import</a>
+          <div class="input-field mt50">
+            <textarea id="mailHtml" class="materialize-textarea mt50" placeholder="Html"></textarea>
+            <a id="htmlDefault" class="waves-effect waves-light btn">default</a>
+            <a id="htmlStore" class="waves-effect waves-light btn">store</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#mailHtmlMdl">import</a>
+            <a class="waves-effect waves-light btn modal-trigger" href="#mailHtmlExportMdl">export</a>
+          </div>
+
+
 
       </div>
       <div class="col s6">
@@ -66,50 +65,7 @@
 
 
     <!-- Modal Structure -->
-    <div id="mailToMdl" class="modal bottom-sheet">
-      <div class="modal-content">
-        <h4>to Modal Header</h4>
-      </div>
-      <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">close</a>
-      </div>
-    </div>
-
-    <div id="mailToExportMdl" class="modal bottom-sheet">
-      <div class="modal-content">
-        <h4>export mail tpl</h4>
-        <input id="mailToExport" type="text" class="validate" placeholder="To">
-      </div>
-      <div class="modal-footer">
-        <a id="toExport" class="modal-action modal-close waves-effect waves-green btn-flat">save</a>
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">close</a>
-      </div>
-    </div>
-
-    <div id="mailTextMdl" class="modal bottom-sheet">
-      <div class="modal-content">
-        <h4>text Modal Header</h4>
-        <p>A bunch of text</p>
-      </div>
-      <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">close</a>
-      </div>
-    </div>
-    <div id="mailHtmlMdl" class="modal bottom-sheet">
-      <div class="modal-content">
-        <h4>html Modal Header</h4>
-        <p>A bunch of text</p>
-      </div>
-      <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">close</a>
-      </div>
-    </div>
-
-
-
-
-
-
+    <div id="mdls"></div>
 
 
 <!--
@@ -124,9 +80,8 @@
     <button type="button" id="mainSettings" class="mini-btn waves-effect waves-light blink">SETTINGS</button>
   </div>
   <div class="globeDiv">
-    <div id="onlineStatus" class="greenGlobe blink">
-
-    </div>
+    <div id="sessionStatus" class="redGlobe blink"></div>
+    <div id="onlineStatus" class="redGlobe blink"></div>
   </div>
 </div>
 
@@ -134,7 +89,17 @@
 
 <div class="mask"></div>
 
-<div id="settingsMenu">hello</div>
+<div id="settingsMenu">
+  <div class="">
+    <h3>session</h3>
+    <button type="button" id="storeSession" class="waves-effect waves-light btn">store</button>
+    <button type="button" id="resetSession" class="waves-effect waves-light btn">reset</button>
+  </div>
+  <div id="mailOps">
+    <h3>mail</h3>
+
+  </div>
+</div>
 <audio id="audio" preload="auto"></audio>
 <script src="./public/js/src-min-noconflict/ace.js"></script>
   <script>
@@ -142,35 +107,29 @@
     const {ipcRenderer} = require('electron'),
     appConf = require('./config/appConfig');
     jQuery = require('jquery'),
-    _ = require('lodash');
-
-    _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
-
-    var toTop = _.template('<span id="toTop" class="fa fa-chevron-up"></span>');
-    var globeTpl = _.template('<div id="{{id}}" class="redGlobe blink"></div>');
-    var helpTpl  = _.template('<div id="helpDiv"><span id="AboutDevTypeText" class="typeing blink"></span><span class="blinker">&#32;</span></div>');
-
-    const appUtils = require(appConf.paths.js+'appUtils.js'),
+    _ = require('lodash'),
+    appUtils = require(appConf.paths.js+'appUtils.js'),
     help = require(appConf.paths.data+'help.json'),
-
     $ = jQuery,
     arr = [],
     obj = {};
+    tpl = require('./data/templates');
 
 
+    _.forIn(appConf.tplDirs,function(i,e){
+      $('#mdls').append(
+        tpl.importMdlTpl({"id":_.capitalize(e)}),
+        tpl.exportMdlTpl({"id":_.capitalize(e),"name":e})
+      )
+    })
+
+    $('body').prepend(tpl.navTpl({"title":appConf.title}))
     var mailToList = _.clone(arr);
     var requireScripts = ["velocity.min","global","forms","modal","waves","renderer"];
 
     _.forEach(requireScripts,function(i){
       require(appConf.paths.js + i + '.js');
     })
-
-
-
-    
-
-
-
 
   </script>
 </body>
