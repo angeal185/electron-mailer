@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="./public/css/styles.css">
 </head>
 <body class="">
-
+<div id="particle"></div>
 
   <div class="main w90">
 
@@ -16,6 +16,7 @@
       <div class="col s6">
 
           <div class="input-field">
+            <h4>To</h4>
             <input id="mailTo" type="text" class="validate" placeholder="To">
             <div id="mailToList" class="badgeDiv"></div>
             <a id="toDefault" class="waves-effect waves-light btn">default</a>
@@ -24,20 +25,23 @@
             <a class="waves-effect waves-light btn modal-trigger" href="#mailToExportMdl">export</a>
 
           </div>
+
           <div class="input-field mt50">
+            <h4>From</h4>
             <input id="mailFrom" type="text" class="validate" placeholder="From">
             <a id="fromDefault" class="waves-effect waves-light btn">default</a>
             <a id="fromStore" class="waves-effect waves-light btn">store</a>
-
-
           </div>
+
           <div class="input-field mt50">
+            <h4>Subject</h4>
             <input id="mailSubject" type="text" class="validate" placeholder="Subject">
             <a id="subjectDefault" class="waves-effect waves-light btn">default</a>
             <a id="subjectStore" class="waves-effect waves-light btn">store</a>
           </div>
 
           <div class="input-field mt50">
+            <h4>Text</h4>
             <textarea id="mailText" class="materialize-textarea mt50" placeholder="Text"></textarea>
             <a id="textDefault" class="waves-effect waves-light btn">default</a>
             <a id="textStore" class="waves-effect waves-light btn">store</a>
@@ -46,11 +50,19 @@
           </div>
 
           <div class="input-field mt50">
+            <h4>Html</h4>
             <textarea id="mailHtml" class="materialize-textarea mt50" placeholder="Html"></textarea>
             <a id="htmlDefault" class="waves-effect waves-light btn">default</a>
             <a id="htmlStore" class="waves-effect waves-light btn">store</a>
             <a class="waves-effect waves-light btn modal-trigger" href="#mailHtmlMdl">import</a>
             <a class="waves-effect waves-light btn modal-trigger" href="#mailHtmlExportMdl">export</a>
+          </div>
+
+          <div class="input-field mt50">
+            <h4>Attachments</h4>
+            <div id="mailAttachmentList" class="badgeDiv"></div>
+            <a id="#attachmentImport" class="waves-effect waves-light btn modal-trigger" href="#mailAttachmentMdl">import</a>
+
           </div>
 
 
@@ -99,13 +111,16 @@
     <h3>mail</h3>
 
   </div>
+  <button type="button" id="sendMail" class="waves-effect waves-light btn">send</button>
+  <button type="button" id="resetMail" class="waves-effect waves-light btn">reset</button>
 </div>
 <audio id="audio" preload="auto"></audio>
 <script src="./public/js/src-min-noconflict/ace.js"></script>
   <script>
 
     const {ipcRenderer} = require('electron'),
-    appConf = require('./config/appConfig');
+    appConf = require('./config/appConfig'),
+    nodemailer = require('nodemailer'),
     jQuery = require('jquery'),
     _ = require('lodash'),
     appUtils = require(appConf.paths.js+'appUtils.js'),
@@ -123,13 +138,18 @@
       )
     })
 
+    $('#mdls').append(
+      tpl.importMdlTpl({"id":"Attachment"})
+    )
+
     $('body').prepend(tpl.navTpl({"title":appConf.title}))
     var mailToList = _.clone(arr);
-    var requireScripts = ["velocity.min","global","forms","modal","waves","renderer"];
 
-    _.forEach(requireScripts,function(i){
+    _.forEach(appConf.requireScripts,function(i){
       require(appConf.paths.js + i + '.js');
     })
+
+    particlesJS('particle', appConf.particles);
 
   </script>
 </body>

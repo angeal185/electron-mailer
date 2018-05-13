@@ -1,5 +1,4 @@
-const fs = require('fs'),
-modJSON = require('../../modules/modJSON');
+const fs = require('fs');
 
 var editor = ace.edit("mailHtml")
 
@@ -211,6 +210,30 @@ exports.htmlList = function(i) {
   });
 };
 
+exports.attachmentList = function() {
+  var items = _.clone(arr);
+  var dir = './attachments/';
+  fs.readdir(dir, function(err, files) {
+    if (err) {
+    console.log(err);
+    return;
+  }
+    _.forEach(files,function(f) {
+      $('#mailAttachmentMdl > .modal-content').append('<a class="waves-effect waves-light btn mr5 toAttachment">'+f+'</a>')
+      console.log(f)
+    });
+    $('.toAttachment').click(function(){
+      $('.attached').off();
+      console.log(dir+this.text)
+      var get = dir+this.text
+      $('#mailAttachmentList').append('<span class="new badge attached">'+get+'</span>');
+      $('.attached').click(function(event) {
+        $(this).remove()
+      });
+    })
+  });
+};
+
 exports.showtoast = new ToastBuilder();
 
 exports.scrollTop = function() {
@@ -324,3 +347,48 @@ exports.mask = function(a,b,c){
     $(b+','+c).fadeOut('slow');
   });
 }
+
+
+exports.sendEmail = function (){
+
+  let transporter = nodemailer.createTransport({
+      host: $('#host').val(),
+      port: $('#port').val(),
+      secure: $('#secure').val(),
+      auth: {
+          user: $('#username').val(),
+          pass: $('#password').val()
+      }
+  });
+
+  // setup email data with unicode symbols
+  let mailOptions = {
+      from: $('#mailFrom').val(),
+      to: $('#mailTo').val(),
+      subject: $('#mailSubject').val(),
+      text: $('#mailText').val(),
+      html: editor.getValue(),
+      attachments: [
+        {
+            filename: 'test.txt',
+            path: './attachments/',
+            cid: 'beneaves01@hotmail.com' // should be as unique as possible
+        }
+    ]
+  };
+
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          return console.log(error);
+      }
+      console.log('Message sent: %s', info.messageId);
+      // Preview only available when sending through an Ethereal account
+      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+      // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+      // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+  });
+}
+
+//sendEmail()

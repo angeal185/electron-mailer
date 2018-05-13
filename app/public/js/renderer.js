@@ -24,6 +24,7 @@ ipcRenderer.send('getData')
 appUtils.list(appConf.tplDirs.to,'To')
 appUtils.list(appConf.tplDirs.text,'Text')
 appUtils.htmlList(appConf.tplDirs.html)
+appUtils.attachmentList()
 appUtils.defaults();
 appUtils.mask('#mainSettings','.mask','#settingsMenu')
 
@@ -106,4 +107,8 @@ _.forIn(exp,function(e,i){
 $('#htmlExport').click(function() {
   appUtils.write(appConf.tplDirs.html,'#mailHtmlExport','html','html');
   appUtils.list(appConf.tplDirs.html,'Html')
+});
+
+$('#attachmentImport').click(function() {
+
 });
