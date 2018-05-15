@@ -9,9 +9,11 @@
   "requireScripts": [
     "velocity.min",
     "particles.min",
-    "global", "forms",
+    "global",
+    "forms",
     "modal",
     "waves",
+    "tooltip",
     "renderer"
   ],
   "mdl": {

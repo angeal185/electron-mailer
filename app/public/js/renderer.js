@@ -90,7 +90,7 @@ $(document).ready(function(){
   _.forIn(_.omit(appConf.mail.auth),function(i,e){
     $('#mailOps').append('<label for="#'+e+'" class="blink">'+_.startCase(e)+'</label><input id="'+e+'" type="text" class="validate" value="'+i+'">')
   })
-
+  //$('.tooltipped').tooltip();
 });
 
 var exp = {

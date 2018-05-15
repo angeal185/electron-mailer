@@ -226,7 +226,7 @@ exports.attachmentList = function() {
       $('.attached').off();
       console.log(dir+this.text)
       var get = dir+this.text
-      $('#mailAttachmentList').append('<span class="new badge attached">'+get+'</span>');
+      $('#mailAttachmentList').append('<span class="new badge attached tooltipped" data-tooltip="Remove">'+get+'</span>');
       $('.attached').click(function(event) {
         $(this).remove()
       });
