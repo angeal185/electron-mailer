@@ -224,12 +224,18 @@ exports.attachmentList = function() {
     });
     $('.toAttachment').click(function(){
       $('.attached').off();
-      console.log(dir+this.text)
-      var get = dir+this.text
-      $('#mailAttachmentList').append('<span class="new badge attached tooltipped" data-tooltip="Remove">'+get+'</span>');
-      $('.attached').click(function(event) {
-        $(this).remove()
-      });
+      var get = this.text
+
+        if ($('.attached').html(get).length) {
+          console.log('attachment '+get+' already exists')
+          appUtils.showtoast('attachment exists');
+        } else {
+          $('#mailAttachmentList').append('<span class="new badge attached tooltipped" data-tooltip="Remove">'+get+'</span>');
+          $('.attached').click(function(event) {
+            $(this).remove()
+          });
+        }
+
     })
   });
 };
