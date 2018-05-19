@@ -9,8 +9,8 @@
 </head>
 <body>
 <audio id="audio" preload="auto"></audio>
-<script src="./public/js/src-min-noconflict/ace.js"></script>
-<script>
+  <script src="./public/js/src-min-noconflict/ace.js"></script>
+  <script>
     const {ipcRenderer} = require('electron'),
     appConf = require('./config/appConfig'),
     nodemailer = require('nodemailer'),
