@@ -151,5 +151,17 @@
       }
     },
     "retina_detect": true
+  },
+  "btmNav":{
+    "btn":{
+      "editorSettings":"ACE",
+      "mainSettings":"SETTINGS"
+    },
+    "globe":["sessionStatus","onlineStatus"]
+  },
+  "settingsMenu":{
+    "session":"session",
+    "mailOps":"mail",
+    "confirm":"confirm"
   }
 }

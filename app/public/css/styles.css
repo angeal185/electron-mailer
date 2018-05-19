@@ -16,7 +16,9 @@ body {
   font-family: 'Ubuntu', sans-serif;
   background: #f3f3f3;
 }
-
+button, .btn {
+  margin-right: 10px;
+}
 .w90 {
   width: 90%;
   margin-left: 5%;
